@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#07061a">
+<title>Harry Potter Books: Ultimate Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#07061a; --candle:#ffd27a; --flame:#ffb43c;
+  --gilt:#c9a24a; --gilt-lt:#f0d693; --gilt-dk:#7d5f1e;
+  --page:#f2e6cb; --page-sh:#dfcda4; --ink:#2b2216; --ink-soft:#5d4c33;
+  --emerald:#2f8f5b; --emerald-lt:#d7ecdd;
+  --crimson:#b8342c; --crimson-lt:#f2dad6;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;}
+body{background:var(--void);color:var(--page);
+  font-family:"EB Garamond","Iowan Old Style",Palatino,Georgia,serif;
+  overflow-x:hidden;min-height:100%;}
+
+/* ===== ATMOSPHERE ===== */
+#sky{position:fixed;inset:0;z-index:0;display:block;}
+.aurora{position:fixed;inset:-20%;z-index:1;pointer-events:none;filter:blur(70px);opacity:.5;}
+.blob{position:absolute;border-radius:50%;mix-blend-mode:screen;}
+.b1{width:60vw;height:60vw;left:-10vw;top:2vh;background:radial-gradient(circle,#7a1220 0%,transparent 70%);animation:drift1 26s ease-in-out infinite;}
+.b2{width:55vw;height:55vw;right:-12vw;top:22vh;background:radial-gradient(circle,#0f4a3a 0%,transparent 70%);animation:drift2 32s ease-in-out infinite;}
+.b3{width:65vw;height:65vw;left:8vw;bottom:-8vh;background:radial-gradient(circle,#12306e 0%,transparent 70%);animation:drift3 29s ease-in-out infinite;}
+.b4{width:40vw;height:40vw;right:0;bottom:8vh;background:radial-gradient(circle,#6b5410 0%,transparent 70%);animation:drift1 35s ease-in-out infinite reverse;}
+@keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,-5vh) scale(1.15)}}
+@keyframes drift2{0%,100%{transform:translate(0,0) scale(1.1)}50%{transform:translate(-7vw,6vh) scale(.92)}}
+@keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(5vw,-7vh) scale(1.12)}}
+.vignette{position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 35%,transparent 30%,rgba(4,3,14,.75) 100%);}
+
+.wrap{position:relative;z-index:3;width:100%;max-width:450px;margin:0 auto;
+  padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 30px);}
+
+/* ===== TITLE ===== */
+header{text-align:center;padding:6px 0 4px;}
+.crestline{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:13px;}
+.crestline .bar{height:1px;width:44px;background:linear-gradient(90deg,transparent,var(--gilt));}
+.crestline .bar.r{background:linear-gradient(90deg,var(--gilt),transparent);}
+.hallows{width:26px;height:26px;opacity:.9;}
+.eyebrow{font-family:"Cinzel",serif;text-transform:uppercase;letter-spacing:.34em;
+  font-size:9.5px;font-weight:600;color:var(--gilt);margin:0 0 12px;text-indent:.34em;}
+h1{font-family:"Cinzel",serif;font-size:27px;line-height:1.16;margin:0;font-weight:700;
+  background:linear-gradient(175deg,#fff5da 0%,var(--gilt-lt) 30%,var(--gilt) 55%,var(--gilt-dk) 78%,var(--gilt-lt) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 2px 10px rgba(201,162,74,.35));letter-spacing:.02em;}
+.sub{margin:14px auto 0;max-width:305px;font-size:15px;font-style:italic;color:#c9bda0;line-height:1.5;}
+
+/* ===== CANDLE PROGRESS ===== */
+.progress{display:flex;justify-content:center;align-items:flex-end;margin:22px 0 2px;height:30px;flex-wrap:nowrap;}
+.cnd{width:5px;height:16px;border-radius:1.5px;flex:0 0 auto;
+  background:linear-gradient(180deg,#efe4cd,#b9a887);position:relative;opacity:.3;transition:opacity .3s;}
+.cnd::after{content:"";position:absolute;left:50%;top:-9px;width:7px;height:11px;
+  transform:translateX(-50%) scale(0);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:radial-gradient(circle at 50% 70%,#fff2c4,var(--flame) 55%,rgba(255,120,20,0) 78%);
+  transition:transform .3s cubic-bezier(.3,1.6,.5,1);}
+.cnd.lit{opacity:1;}
+.cnd.lit::after{transform:translateX(-50%) scale(1);animation:flick 1.1s ease-in-out infinite;
+  box-shadow:0 0 12px 3px rgba(255,180,60,.5);}
+.cnd.out{opacity:.85;}
+.cnd.out::after{transform:translateX(-50%) scale(.85);
+  background:radial-gradient(circle at 50% 70%,#ffd8d2,var(--crimson) 60%,rgba(180,40,30,0) 80%);
+  box-shadow:0 0 10px 2px rgba(184,52,44,.45);}
+.cnd.now{animation:pulseC 1.8s ease-in-out infinite;}
+@keyframes flick{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.15,.92)}}
+@keyframes pulseC{0%,100%{opacity:.45}50%{opacity:.9}}
+
+/* ===== PAGE CARD ===== */
+.card{position:relative;margin-top:18px;border-radius:4px;
+  background:radial-gradient(ellipse at 20% 8%,rgba(255,255,255,.5),transparent 55%),
+    linear-gradient(160deg,var(--page) 0%,#eaddbe 45%,var(--page-sh) 100%);
+  color:var(--ink);
+  box-shadow:0 26px 60px -12px rgba(0,0,0,.75),0 0 0 1px rgba(201,162,74,.55),
+             0 0 46px -6px rgba(255,190,90,.22),inset 0 0 46px rgba(160,120,60,.16);
+  padding:5px;animation:rise .55s cubic-bezier(.2,.8,.3,1) both;}
+@keyframes rise{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+.card::before{content:"";position:absolute;inset:5px;border:1px solid rgba(125,95,30,.45);border-radius:2px;pointer-events:none;}
+.card::after{content:"";position:absolute;inset:9px;border:1px solid rgba(125,95,30,.2);border-radius:1px;pointer-events:none;}
+.inner{position:relative;padding:22px 19px 19px;}
+.corner{position:absolute;width:17px;height:17px;border-color:var(--gilt-dk);opacity:.75;}
+.c-tl{top:9px;left:9px;border-top:2px solid;border-left:2px solid;}
+.c-tr{top:9px;right:9px;border-top:2px solid;border-right:2px solid;}
+.c-bl{bottom:9px;left:9px;border-bottom:2px solid;border-left:2px solid;}
+.c-br{bottom:9px;right:9px;border-bottom:2px solid;border-right:2px solid;}
+.qhead{display:flex;align-items:center;gap:9px;margin:0 0 13px;}
+.qhead .ln{flex:1;height:1px;background:linear-gradient(90deg,rgba(125,95,30,.5),transparent);}
+.qnum{font-family:"Cinzel",serif;text-transform:uppercase;letter-spacing:.24em;
+  font-size:10px;font-weight:600;color:var(--gilt-dk);}
+.question{font-size:20px;line-height:1.36;margin:0 0 19px;font-weight:500;color:var(--ink);}
+
+/* ===== LENGTH PICKER ===== */
+.lengths{display:flex;flex-direction:column;gap:10px;}
+.len{display:flex;align-items:center;gap:15px;width:100%;text-align:left;
+  font-family:inherit;color:var(--ink);
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.12));
+  border:1.5px solid rgba(125,95,30,.32);border-radius:3px;padding:12px 15px;cursor:pointer;
+  transition:transform .08s,box-shadow .25s,border-color .25s,background .25s;}
+.len:active{transform:scale(.985);}
+.len:hover{border-color:var(--gilt);box-shadow:0 0 18px -4px rgba(201,162,74,.5);}
+.len .n{font-family:"Cinzel",serif;font-size:27px;font-weight:700;color:var(--gilt-dk);
+  min-width:44px;text-align:center;line-height:1;text-shadow:0 1px 0 rgba(255,255,255,.6);}
+.len .meta{flex:1;}
+.len .lab{font-family:"Cinzel",serif;font-size:12.5px;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);}
+.len .desc{font-size:14px;font-style:italic;color:var(--ink-soft);margin-top:2px;line-height:1.3;}
+
+/* ===== OPTIONS ===== */
+.opts{display:flex;flex-direction:column;gap:10px;}
+.opt{position:relative;overflow:hidden;display:flex;align-items:center;gap:12px;width:100%;
+  text-align:left;font-family:inherit;font-size:16.5px;line-height:1.3;color:var(--ink);
+  background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.12));
+  border:1.5px solid rgba(125,95,30,.32);border-radius:3px;padding:13px 14px;cursor:pointer;
+  transition:transform .08s,background .3s,border-color .3s,color .3s,box-shadow .3s;}
+.opt:active{transform:scale(.985);}
+.opt .letter{flex:0 0 auto;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  font-family:"Cinzel",serif;font-size:12.5px;font-weight:700;
+  border:1.5px solid var(--gilt-dk);color:var(--gilt-dk);
+  background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.7),transparent 70%);transition:.3s;}
+.opt .txt{flex:1;}
+.opt.correct{background:linear-gradient(180deg,#e6f4ea,var(--emerald-lt));
+  border-color:var(--emerald);color:var(--emerald);
+  box-shadow:0 0 0 1px rgba(47,143,91,.35),0 0 22px -4px rgba(47,143,91,.55);}
+.opt.correct .letter{background:var(--emerald);border-color:var(--emerald);color:#fff;}
+.opt.wrong{background:linear-gradient(180deg,#fbe6e2,var(--crimson-lt));
+  border-color:var(--crimson);color:var(--crimson);animation:shake .4s;}
+.opt.wrong .letter{background:var(--crimson);border-color:var(--crimson);color:#fff;}
+.opt.dim{opacity:.42;}
+.opt.locked{cursor:default;}
+@keyframes shake{0%,100%{transform:translateX(0)}18%{transform:translateX(-6px)}
+  38%{transform:translateX(5px)}58%{transform:translateX(-3px)}78%{transform:translateX(2px)}}
+.sheen{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.75) 50%,transparent 65%);
+  transform:translateX(-120%);}
+.opt.correct .sheen{animation:sweep .75s ease-out .05s;}
+@keyframes sweep{to{transform:translateX(120%)}}
+.spark{position:fixed;width:5px;height:5px;border-radius:50%;pointer-events:none;z-index:60;
+  background:radial-gradient(circle,#fff6d5,var(--flame));box-shadow:0 0 8px 2px rgba(255,190,80,.8);}
+
+/* ===== BUTTONS ===== */
+.next{margin-top:17px;width:100%;position:relative;overflow:hidden;
+  font-family:"Cinzel",serif;text-transform:uppercase;letter-spacing:.2em;font-size:12.5px;font-weight:700;
+  background:linear-gradient(180deg,#2f2618,#1a140c);border:1px solid var(--gilt-dk);border-radius:3px;
+  padding:15px;cursor:pointer;color:transparent;
+  box-shadow:0 6px 18px -6px rgba(0,0,0,.6),inset 0 1px 0 rgba(240,214,147,.25);
+  opacity:0;transform:translateY(6px);pointer-events:none;transition:opacity .35s,transform .35s;}
+.next.show{opacity:1;transform:none;pointer-events:auto;}
+.next span,.share span{background:linear-gradient(180deg,var(--gilt-lt),var(--gilt));
+  -webkit-background-clip:text;background-clip:text;color:transparent;}
+
+/* ===== SEAL ===== */
+.sealbox{display:flex;flex-direction:column;align-items:center;margin-top:34px;}
+.seal{position:relative;width:124px;height:124px;cursor:pointer;animation:bob 3.4s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.half{position:absolute;inset:0;transition:transform .85s cubic-bezier(.3,.9,.4,1),opacity .85s;}
+.half.l{clip-path:polygon(0 0,53% 0,46% 28%,55% 54%,47% 100%,0 100%);}
+.half.r{clip-path:polygon(53% 0,100% 0,100% 100%,47% 100%,55% 54%,46% 28%);}
+.face{position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 34% 28%,#c94a3c,#8e1c18 55%,#4d0d0b 100%);
+  box-shadow:0 12px 34px rgba(0,0,0,.7),inset 0 -5px 14px rgba(0,0,0,.55),inset 0 4px 10px rgba(255,160,140,.32);
+  display:grid;place-items:center;}
+.seal.broken .half.l{transform:translate(-64px,26px) rotate(-32deg);opacity:0;}
+.seal.broken .half.r{transform:translate(64px,26px) rotate(32deg);opacity:0;}
+.seal .glow{position:absolute;inset:-16px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,160,90,.28),transparent 65%);animation:pulseG 3.4s ease-in-out infinite;}
+@keyframes pulseG{0%,100%{opacity:.45;transform:scale(.95)}50%{opacity:.9;transform:scale(1.08)}}
+.taphint{font-family:"Cinzel",serif;text-transform:uppercase;letter-spacing:.28em;font-size:10.5px;
+  color:var(--gilt);margin-top:26px;opacity:.85;animation:pulseG 2.6s ease-in-out infinite;}
+.startnote{margin-top:16px;font-size:14px;font-style:italic;color:#a99b80;text-align:center;max-width:270px;}
+
+/* ===== RESULTS ===== */
+.result{text-align:center;padding:6px 4px 2px;}
+.emblem{width:78px;height:78px;margin:0 auto 6px;display:block;}
+.emblem path,.emblem circle,.emblem line{stroke:var(--gilt-dk);stroke-width:3;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:300;stroke-dashoffset:300;
+  animation:draw 1.5s ease-out .2s forwards;}
+@keyframes draw{to{stroke-dashoffset:0}}
+.score-num{font-family:"Cinzel",serif;font-size:60px;font-weight:700;line-height:1;
+  color:var(--gilt-dk);text-shadow:0 1px 0 rgba(255,255,255,.5);}
+.score-of{font-size:19px;color:var(--ink-soft);font-family:"EB Garamond",serif;}
+.verdict{font-family:"Cinzel",serif;font-size:19px;font-weight:600;margin:14px 0 6px;color:var(--ink);}
+.verdict-sub{font-size:15.5px;font-style:italic;color:var(--ink-soft);line-height:1.5;margin:0 0 22px;}
+.btnrow{display:flex;flex-direction:column;gap:10px;}
+.share{font-family:"Cinzel",serif;text-transform:uppercase;letter-spacing:.18em;font-size:12.5px;font-weight:700;
+  background:linear-gradient(180deg,#2f2618,#1a140c);border:1px solid var(--gilt-dk);border-radius:3px;
+  padding:15px;cursor:pointer;color:transparent;}
+.replay{font-family:"Cinzel",serif;text-transform:uppercase;letter-spacing:.18em;font-size:12.5px;font-weight:700;
+  color:var(--ink-soft);background:transparent;border:1px solid rgba(125,95,30,.5);border-radius:3px;
+  padding:14px;cursor:pointer;}
+footer{margin-top:26px;text-align:center;font-size:11px;color:#7d7059;letter-spacing:.1em;
+  font-family:"Cinzel",serif;text-transform:uppercase;}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01s!important;}}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="aurora">
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="blob b3"></div><div class="blob b4"></div>
+</div>
+<div class="vignette"></div>
+
+<div class="wrap">
+  <header>
+    <div class="crestline">
+      <div class="bar"></div>
+      <svg class="hallows" viewBox="0 0 40 40" fill="none" stroke="#c9a24a" stroke-width="2">
+        <path d="M20 4 L36 34 L4 34 Z"/><circle cx="20" cy="25" r="8"/><line x1="20" y1="4" x2="20" y2="34"/>
+      </svg>
+      <div class="bar r"></div>
+    </div>
+    <p class="eyebrow">Seven Novels · One Trial</p>
+    <h1>Harry Potter Books:<br>Ultimate Quiz</h1>
+    <p class="sub">Drawn from the pages themselves. The films will not save you.</p>
+  </header>
+
+  <div class="progress" id="progress" style="display:none"></div>
+  <div id="stage"></div>
+
+  <footer>Answers per the novels</footer>
+</div>
+
+<script>
+/* ---------- ENCHANTED CEILING ---------- */
+(function(){
+  const c=document.getElementById('sky'),x=c.getContext('2d');
+  let stars=[],candles=[];
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function size(){
+    c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;
+    c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';
+    x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);build();
+  }
+  function build(){
+    const w=innerWidth,h=innerHeight;
+    stars=[];for(let i=0;i<110;i++)stars.push({x:Math.random()*w,y:Math.random()*h,
+      r:Math.random()*1.3+.3,p:Math.random()*6.284,s:Math.random()*.018+.006});
+    candles=[];const n=w<420?11:15;
+    for(let i=0;i<n;i++)candles.push({x:Math.random()*w,y:Math.random()*h*.92,
+      h:Math.random()*16+13,w:Math.random()*2.2+3,p:Math.random()*6.284,
+      sp:Math.random()*.5+.25,amp:Math.random()*11+6,fl:Math.random()*6.284,a:Math.random()*.35+.4});
+  }
+  let t=0;
+  function draw(){
+    const w=innerWidth,h=innerHeight;
+    x.clearRect(0,0,w,h);t+=reduce?0:.016;
+    for(const s of stars){
+      const a=.28+Math.sin(t*s.s*60+s.p)*.28;
+      x.globalAlpha=Math.max(0,a);x.fillStyle='#fff6dd';
+      x.beginPath();x.arc(s.x,s.y,s.r,0,6.284);x.fill();
+    }
+    for(const k of candles){
+      const yy=k.y+Math.sin(t*k.sp+k.p)*k.amp;
+      const xx=k.x+Math.cos(t*k.sp*.6+k.p)*4;
+      x.globalAlpha=k.a*.85;
+      const g=x.createRadialGradient(xx,yy-k.h/2-6,0,xx,yy-k.h/2-6,42);
+      g.addColorStop(0,'rgba(255,196,96,.42)');g.addColorStop(1,'rgba(255,160,50,0)');
+      x.fillStyle=g;x.beginPath();x.arc(xx,yy-k.h/2-6,42,0,6.284);x.fill();
+      x.globalAlpha=k.a;
+      const wg=x.createLinearGradient(xx-k.w/2,0,xx+k.w/2,0);
+      wg.addColorStop(0,'#8e8168');wg.addColorStop(.4,'#f2e7ce');wg.addColorStop(1,'#a2947a');
+      x.fillStyle=wg;x.fillRect(xx-k.w/2,yy-k.h,k.w,k.h);
+      const f=1+Math.sin(t*7+k.fl)*.16;
+      x.beginPath();x.ellipse(xx,yy-k.h-4*f,2.4*f,5.4*f,0,0,6.284);
+      x.fillStyle='rgba(255,190,70,.95)';x.fill();
+      x.beginPath();x.ellipse(xx,yy-k.h-3.4*f,1.1*f,2.6*f,0,0,6.284);
+      x.fillStyle='rgba(255,251,225,.95)';x.fill();
+    }
+    x.globalAlpha=1;requestAnimationFrame(draw);
+  }
+  addEventListener('resize',size);size();draw();
+})();
+
+/* ---------- QUESTION BANK (25) ---------- */
+const BANK=[
+ {q:"The Potters' grave in Godric's Hollow bears an inscription. Where is it drawn from?",
+  options:["A Ministry of Magic decree","A poem written by Dumbledore","The First Epistle to the Corinthians","The Tale of the Three Brothers"],answer:2},
+ {q:"What is the password to Dumbledore's office for Harry's first private lesson in Half-Blood Prince?",
+  options:["Sherbet Lemon","Cockroach Cluster","Acid Pops","Fizzing Whizzbee"],answer:2},
+ {q:"Who wrote A History of Magic, the textbook Harry consults about Godric's Hollow?",
+  options:["Miranda Goshawk","Adalbert Waffling","Emeric Switch","Bathilda Bagshot"],answer:3},
+ {q:"What is Albus Dumbledore's full name, in the correct order?",
+  options:["Albus Brian Wulfric Percival","Albus Percival Brian Wulfric","Albus Percival Wulfric Brian","Albus Wulfric Percival Brian"],answer:2},
+ {q:"In the books, what does Harry smell in the Amortentia potion?",
+  options:["Fresh grass, new parchment and perfume","Broom polish, parchment and spearmint","Treacle tart, a broom handle, and a flowery scent from the Burrow","Wood smoke, treacle and old books"],answer:2},
+ {q:"Which house-elf serves the Black family at Grimmauld Place?",
+  options:["Winky","Kreacher","Hokey","Dobby"],answer:1},
+ {q:"Snape refused N.E.W.T. Potions to anyone below which O.W.L. grade — the barrier to Harry's Auror ambitions?",
+  options:["Exceeds Expectations","Acceptable","Poor","Outstanding"],answer:3},
+ {q:"What is the incantation Snape invented that Harry uses against Draco in the bathroom?",
+  options:["Langlock","Muffliato","Sectumsempra","Levicorpus"],answer:2},
+ {q:"What is the name of Bellatrix Lestrange's husband?",
+  options:["Roland Lestrange","Rodolphus Lestrange","Rabastan Lestrange","Ranulf Lestrange"],answer:1},
+ {q:"In wizarding currency, how many Knuts make a single Sickle?",
+  options:["17","29","23","13"],answer:1},
+ {q:"What does R.A.B., the initials in the fake locket's note, stand for?",
+  options:["Regulus Alphard Black","Rodolphus Antares Black","Regulus Aquila Black","Regulus Arcturus Black"],answer:3},
+ {q:"Which Quidditch team does Ron Weasley support?",
+  options:["Ballycastle Bats","Wimbourne Wasps","Chudley Cannons","Puddlemere United"],answer:2},
+ {q:"In Half-Blood Prince, Tonks's Patronus changes shape. What does it become?",
+  options:["A swan","A wolf","A hare","A jack russell terrier"],answer:1},
+ {q:"What is the name of Lord Voldemort's mother?",
+  options:["Merope Gaunt","Morfin Gaunt","Cassandra Gaunt","Hepzibah Smith"],answer:0},
+ {q:"Along with Slytherin's locket, what did Voldemort steal from Hepzibah Smith?",
+  options:["Ravenclaw's diadem","Gryffindor's sword","The Gaunt ring","Hufflepuff's cup"],answer:3},
+ {q:"What are the names of Neville Longbottom's parents?",
+  options:["Edgar and Alice","Frank and Amelia","Frank and Alice","Frank and Augusta"],answer:2},
+ {q:"What is the name of Aragog's wife, who lives with him in the Forbidden Forest?",
+  options:["Ariana","Mosag","Arachne","Morag"],answer:1},
+ {q:"Where was Ravenclaw's diadem hidden inside Hogwarts?",
+  options:["The Room of Requirement","The Chamber of Secrets","Beneath the Whomping Willow","The Astronomy Tower"],answer:0},
+ {q:"Reversed, the inscription on the Mirror of Erised reads:",
+  options:["I show not your face but your deepest fear","Your heart's desire I show, and not your face","I show the desire of your heart, not your face","I show not your face but your heart's desire"],answer:3},
+ {q:"Who is the Grey Lady, the ghost of Ravenclaw Tower, in life?",
+  options:["Helga Hufflepuff's daughter","Myrtle Warren's elder sister","Helena Ravenclaw, Rowena's daughter","Rowena Ravenclaw herself"],answer:2},
+ {q:"In which Muggle village does the Riddle House stand?",
+  options:["Ottery St Catchpole","Little Hangleton","Great Hangleton","Little Whinging"],answer:1},
+ {q:"What does Dumbledore leave to Ron Weasley in his will?",
+  options:["The Deluminator","The first Snitch Harry caught","The Tales of Beedle the Bard","His pocket watch"],answer:0},
+ {q:"Who heads the Muggle-Born Registration Commission under Voldemort's Ministry?",
+  options:["Pius Thicknesse","Corban Yaxley","Albert Runcorn","Dolores Umbridge"],answer:3},
+ {q:"How does Harry destroy the very first Horcrux he encounters?",
+  options:["The locket, with the sword of Gryffindor","The diary, with the sword of Gryffindor","The diary, with a basilisk fang","The ring, with the sword of Gryffindor"],answer:2},
+ {q:"What is Hermione Granger's middle name, as given in Deathly Hallows?",
+  options:["Anne","Jean","Jane","Grace"],answer:1}
+];
+
+const LETTERS=["A","B","C","D"];
+let QUESTIONS=[],current=0,score=0,answered=false,started=false;
+const results=[];
+const stage=document.getElementById('stage');
+const progress=document.getElementById('progress');
+
+/* ---------- SCREENS ---------- */
+function renderStart(){
+  progress.style.display='none';
+  stage.innerHTML=`
+    <div class="sealbox">
+      <div class="seal" id="seal">
+        <div class="glow"></div>
+        <div class="half l"><div class="face">${sealSvg()}</div></div>
+        <div class="half r"><div class="face">${sealSvg()}</div></div>
+      </div>
+      <p class="taphint">Break the seal</p>
+      <p class="startnote">One attempt per question. Your answer locks the moment you tap it.</p>
+    </div>`;
+  document.getElementById('seal').onclick=breakSeal;
+}
+function sealSvg(){
+  return `<svg width="62" height="62" viewBox="0 0 40 40" fill="none"
+    stroke="rgba(255,215,190,.72)" stroke-width="1.9" stroke-linejoin="round">
+    <path d="M20 5 L35 33 L5 33 Z"/><circle cx="20" cy="24.5" r="7.5"/><line x1="20" y1="5" x2="20" y2="33"/></svg>`;
+}
+function breakSeal(){
+  if(started)return;started=true;
+  const s=document.getElementById('seal');
+  const r=s.getBoundingClientRect();
+  burst(r.left+r.width/2,r.top+r.height/2,22);
+  s.classList.add('broken');
+  const hint=document.querySelector('.taphint');
+  hint.style.transition='opacity .4s';hint.style.opacity='0';
+  setTimeout(renderLength,700);
+}
+
+const LENGTHS=[
+  {n:10,lab:"A Short Sitting",desc:"The essentials. Over before your tea cools."},
+  {n:15,lab:"The Standard Trial",desc:"A fair measure of a careful reader."},
+  {n:20,lab:"The Long Road",desc:"Deeper cuts. Few finish this unscathed."},
+  {n:25,lab:"The Full Trial",desc:"Every question. For the truly devoted."}
+];
+function renderLength(){
+  started=true;progress.style.display='none';
+  stage.innerHTML=`
+    <div class="card">
+      <div class="corner c-tl"></div><div class="corner c-tr"></div>
+      <div class="corner c-bl"></div><div class="corner c-br"></div>
+      <div class="inner">
+        <div class="qhead"><span class="qnum">Choose your trial</span><span class="ln"></span></div>
+        <p class="question">How many questions do you dare?</p>
+        <div class="lengths" id="lengths"></div>
+      </div>
+    </div>`;
+  const box=document.getElementById('lengths');
+  LENGTHS.forEach(L=>{
+    const b=document.createElement('button');
+    b.className='len';
+    b.innerHTML=`<span class="n">${L.n}</span>
+      <span class="meta"><span class="lab">${L.lab}</span>
+      <span class="desc">${L.desc}</span></span>`;
+    b.onclick=()=>beginQuiz(L.n);
+    box.appendChild(b);
+  });
+}
+
+function beginQuiz(n){
+  QUESTIONS=BANK.slice(0,n);
+  current=0;score=0;results.length=0;
+  renderQuestion();
+}
+
+function buildProgress(){
+  progress.style.display='flex';
+  progress.style.gap=(QUESTIONS.length>15?'4px':'8px');
+  progress.innerHTML='';
+  QUESTIONS.forEach((_,i)=>{
+    const d=document.createElement('div');d.className='cnd';
+    if(results[i]===true)d.classList.add('lit');
+    else if(results[i]===false)d.classList.add('out');
+    else if(i===current)d.classList.add('now');
+    progress.appendChild(d);
+  });
+}
+
+function renderQuestion(){
+  answered=false;buildProgress();
+  const item=QUESTIONS[current];
+  stage.innerHTML=`
+    <div class="card">
+      <div class="corner c-tl"></div><div class="corner c-tr"></div>
+      <div class="corner c-bl"></div><div class="corner c-br"></div>
+      <div class="inner">
+        <div class="qhead">
+          <span class="qnum">Question ${current+1} of ${QUESTIONS.length}</span>
+          <span class="ln"></span>
+        </div>
+        <p class="question">${item.q}</p>
+        <div class="opts" id="opts"></div>
+        <button class="next" id="next"><span>${current===QUESTIONS.length-1?'Reveal Your Standing':'Next Question'}</span></button>
+      </div>
+    </div>`;
+  const opts=document.getElementById('opts');
+  item.options.forEach((text,i)=>{
+    const b=document.createElement('button');b.className='opt';
+    b.innerHTML=`<span class="letter">${LETTERS[i]}</span><span class="txt">${text}</span><span class="sheen"></span>`;
+    b.onclick=()=>choose(i);
+    opts.appendChild(b);
+  });
+}
+
+function choose(i){
+  if(answered)return;answered=true;
+  const item=QUESTIONS[current];
+  const opts=[...document.querySelectorAll('.opt')];
+  const right=i===item.answer;
+  results[current]=right;
+  if(right)score++;
+  opts.forEach((o,idx)=>{
+    o.classList.add('locked');
+    if(idx===item.answer)o.classList.add('correct');
+    else if(idx===i)o.classList.add('wrong');
+    else o.classList.add('dim');
+  });
+  const t=opts[item.answer].getBoundingClientRect();
+  burst(t.left+34,t.top+t.height/2,right?16:9);
+  if(navigator.vibrate)navigator.vibrate(right?18:[12,40,12]);
+  const n=document.getElementById('next');
+  n.classList.add('show');n.onclick=advance;
+  buildProgress();
+}
+
+function burst(cx,cy,count){
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div');s.className='spark';
+    s.style.left=cx+'px';s.style.top=cy+'px';
+    document.body.appendChild(s);
+    const ang=Math.random()*6.284,dist=28+Math.random()*72;
+    s.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},
+      {transform:`translate(calc(-50% + ${Math.cos(ang)*dist}px),calc(-50% + ${Math.sin(ang)*dist}px)) scale(0)`,opacity:0}],
+      {duration:520+Math.random()*380,easing:'cubic-bezier(.15,.7,.3,1)'}).onfinish=()=>s.remove();
+  }
+}
+
+function advance(){
+  if(current===QUESTIONS.length-1){renderResults();return;}
+  current++;renderQuestion();
+}
+
+function verdict(s,total){
+  const p=s/total;
+  if(p===1)return["Order of Merlin, First Class","Not a page escaped you. Flawless recall of the canon."];
+  if(p>=.8)return["Prefect Material","A near-perfect memory. One or two slips, nothing more."];
+  if(p>=.6)return["O.W.L.s Passed","Solid knowledge — though a few chapters deserve revisiting."];
+  if(p>=.4)return["Acceptable","You know the films well. The books hold rather more than you'd think."];
+  return["Detention with Snape","Best crack those spines open again, dear reader."];
+}
+
+function renderResults(){
+  const total=QUESTIONS.length;
+  current=total;buildProgress();
+  const[title,sub]=verdict(score,total);
+  stage.innerHTML=`
+    <div class="card">
+      <div class="corner c-tl"></div><div class="corner c-tr"></div>
+      <div class="corner c-bl"></div><div class="corner c-br"></div>
+      <div class="inner"><div class="result">
+        <svg class="emblem" viewBox="0 0 40 40">
+          <path d="M20 5 L35 33 L5 33 Z"/><circle cx="20" cy="24.5" r="7.5"/>
+          <line x1="20" y1="5" x2="20" y2="33"/>
+        </svg>
+        <div class="score-num" id="tally">0<span class="score-of"> / ${total}</span></div>
+        <p class="verdict">${title}</p>
+        <p class="verdict-sub">${sub}</p>
+        <div class="btnrow">
+          <button class="share" id="share"><span>Share My Standing</span></button>
+          <button class="replay" id="replay">Choose Another Trial</button>
+        </div>
+      </div></div>
+    </div>`;
+  countUp(total);
+  document.getElementById('replay').onclick=renderLength;
+  document.getElementById('share').onclick=()=>shareScore(total);
+  if(score/total>=.8)setTimeout(()=>{
+    const r=document.querySelector('.emblem').getBoundingClientRect();
+    burst(r.left+r.width/2,r.top+r.height/2,30);},900);
+}
+
+function countUp(total){
+  const el=document.getElementById('tally');let v=0;
+  const speed=Math.max(45,420/total);
+  const step=()=>{if(v>=score)return;v++;
+    el.innerHTML=v+`<span class="score-of"> / ${total}</span>`;setTimeout(step,speed);};
+  if(score>0)setTimeout(step,450);
+}
+
+async function shareScore(total){
+  const[title]=verdict(score,total);
+  const text=`🕯 Harry Potter Books: Ultimate Quiz — I scored ${score}/${total} (${title}). Think you know the books better? ${location.href}`;
+  try{
+    if(navigator.share)await navigator.share({text});
+    else{await navigator.clipboard.writeText(text);alert('Score copied — paste it into iMessage.');}
+  }catch(e){}
+}
+
+renderStart();
+</script>
+</body>
+</html>
